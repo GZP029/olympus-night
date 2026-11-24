@@ -1,0 +1,5 @@
+{
+  "name": "olympus-night",
+  "owner": { "name": "GZP029" },
+  "plugins": [{ "name": "olympus-night", "source": "./" }]
+}
