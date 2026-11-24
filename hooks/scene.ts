@@ -1,146 +1,15 @@
-// The backdrop: a night sky with a dotted bust of Athena and the month's
+import { BUST_DOTS_DAY, BUST_DOTS_NIGHT, BUST_HEIGHT, BUST_WIDTH } from './hermes-dots'
+
+// The backdrop: a night sky with a dotted head of Hermes and the month's
 // constellation in dark mode, and a dawn over a distant temple in light mode.
 // Everything is still: it is built once and painted once.
 
 type Pt = [number, number]
 
-// --- the dotted bust ---------------------------------------------------------
-
-const LIGHT = norm([-0.55, -0.6, 0.6])
-
-function norm(v: [number, number, number]): [number, number, number] {
-  const l = Math.hypot(v[0], v[1], v[2])
-  return [v[0] / l, v[1] / l, v[2] / l]
-}
-
-// Lambert light on an ellipsoid of radii rx, ry (depth rz) centred at cx, cy.
-function ellipsoid(x: number, y: number, cx: number, cy: number, rx: number, ry: number): number | null {
-  const u = (x - cx) / rx
-  const v = (y - cy) / ry
-  const d = u * u + v * v
-  if (d > 1) return null
-  const z = Math.sqrt(1 - d)
-  const n = norm([u, v, z])
-  return Math.max(0, n[0] * LIGHT[0] + n[1] * LIGHT[1] + n[2] * LIGHT[2])
-}
-
-function inEllipse(x: number, y: number, cx: number, cy: number, rx: number, ry: number): number {
-  const u = (x - cx) / rx
-  const v = (y - cy) / ry
-  return u * u + v * v
-}
-
-// Soft bump: 1 at the centre of the ellipse, 0 at its edge.
-function bump(x: number, y: number, cx: number, cy: number, rx: number, ry: number): number {
-  const d = inEllipse(x, y, cx, cy, rx, ry)
-  return d >= 1 ? 0 : (1 - d) * (1 - d)
-}
-
 let seed = 11
 function rnd(): number {
   seed = (seed * 16807) % 2147483647
   return seed / 2147483647
-}
-
-// Brightness 0..1 at a point of a 600 x 800 box, or null outside the bust.
-function bust(x: number, y: number): number | null {
-  // Crest of the helmet: a sweeping plume of horse hair over the top.
-  const cx = 360
-  const cy = 330
-  const r = Math.hypot(x - cx, y - cy)
-  const a = Math.atan2(y - cy, x - cx)
-  if (r > 196 && r < 236 && a > -2.75 && a < -0.55) {
-    const strand = 0.5 + 0.5 * Math.sin(a * 60)
-    const edge = 1 - Math.abs(r - 216) / 20
-    return 0.35 + 0.5 * strand * edge + 0.15 * (a < -1.6 ? 1 : 0)
-  }
-  // Crest holder.
-  if (r >= 170 && r <= 196 && a > -2.2 && a < -1.2) {
-    return 0.5 + 0.3 * Math.cos(a + 1.7)
-  }
-
-  // Helmet dome, pushed up over the brow, with a bright brim.
-  if (y < 335 || (y < 345 && inEllipse(x, y, 300, 430, 100, 140) > 0.75)) {
-    const h = ellipsoid(x, y, 300, 300, 150, 135)
-    if (h !== null) {
-      const brim = y > 312 ? 0.25 : 0
-      const rim = inEllipse(x, y, 300, 300, 150, 135) > 0.86 ? 0.15 : 0
-      return Math.min(1, h * 0.95 + brim + rim)
-    }
-  }
-
-  // Curls of hair falling beside the face.
-  for (const [hx, hy] of [[200, 395], [400, 395], [210, 465], [390, 465]] as Pt[]) {
-    const c = ellipsoid(x, y, hx, hy, 34, 52)
-    if (c !== null && inEllipse(x, y, 300, 430, 100, 140) > 0.9) {
-      return c * (0.55 + 0.45 * Math.sin((x + y) * 0.25) ** 2)
-    }
-  }
-
-  // Face.
-  const f = ellipsoid(x, y, 300, 430, 100, 140)
-  if (f !== null) {
-    let b = 0.15 + f * 0.95
-    // brow ridge, cheeks and chin catch the light
-    b += 0.25 * bump(x, y, 300, 385, 85, 14)
-    b += 0.2 * bump(x, y, 262, 468, 30, 22) + 0.12 * bump(x, y, 340, 468, 26, 22)
-    b += 0.25 * bump(x, y, 300, 548, 34, 18)
-    // eye sockets: almond shadows under a lit lid
-    b -= 0.8 * bump(x, y, 258, 416, 27, 10) + 0.8 * bump(x, y, 342, 416, 25, 10)
-    b -= 0.3 * bump(x, y, 258, 410, 34, 18) + 0.3 * bump(x, y, 342, 410, 32, 18)
-    b += 0.3 * bump(x, y, 258, 403, 26, 5) + 0.25 * bump(x, y, 342, 403, 24, 5)
-    // nose: a lit ridge with its shadow to the right
-    b += 0.35 * bump(x, y, 297, 448, 7, 46)
-    b -= 0.55 * bump(x, y, 313, 462, 9, 34)
-    b -= 0.6 * bump(x, y, 290, 494, 8, 5) + 0.6 * bump(x, y, 312, 494, 8, 5)
-    b += 0.2 * bump(x, y, 300, 488, 14, 6)
-    // lips
-    b -= 0.65 * bump(x, y, 300, 522, 28, 4)
-    b += 0.2 * bump(x, y, 300, 531, 18, 5)
-    b -= 0.25 * bump(x, y, 300, 540, 14, 4)
-    // shadow down the far side of the face
-    if (x > 370) b -= 0.15
-    return Math.max(0, Math.min(1, b))
-  }
-
-  // Neck: a cylinder.
-  if (x > 248 && x < 352 && y >= 520 && y < 660) {
-    const u = (x - 300) / 52
-    const n = norm([u, 0, Math.sqrt(Math.max(0, 1 - u * u))])
-    const lit = Math.max(0, n[0] * LIGHT[0] + n[2] * LIGHT[2])
-    return (y < 575 ? 0.35 : 0.15) + lit * 0.75
-  }
-
-  // Shoulders and the folds of the peplos.
-  const s = ellipsoid(x, y, 300, 800, 250, 170)
-  if (s !== null) {
-    const fold = 0.5 + 0.5 * Math.sin(x * 0.07 + Math.sin(y * 0.03) * 2)
-    const aegis = bump(x, y, 300, 690, 110, 50)
-    return Math.min(1, s * (0.55 + 0.45 * fold) + 0.2 * aegis)
-  }
-
-  return null
-}
-
-// One dot is "Mx yh0", a zero-length stroke with a round cap. Dots of one size
-// share a path, so the whole bust is a handful of paths.
-function dottedBust(): string {
-  const buckets: string[][] = [[], [], [], [], []]
-  const step = 7
-  for (let row = 0, y = 80; y < 800; row++, y += step * 0.87) {
-    for (let x = 50 + (row % 2 ? step / 2 : 0); x < 600; x += step) {
-      const raw = bust(x, y)
-      const b = raw === null ? null : raw * Math.min(1, (800 - y) / 110)
-      if (b === null || b < 0.08) continue
-      const jitter = (rnd() - 0.5) * 0.15
-      const level = Math.min(4, Math.floor((b + jitter) * 5))
-      if (level < 0) continue
-      buckets[level]!.push(`M${x.toFixed(0)} ${y.toFixed(0)}h0`)
-    }
-  }
-  return buckets
-    .map((d, i) => (d.length ? `<path class="dot" stroke-width="${(1.4 + i * 1.05).toFixed(2)}" stroke-opacity="${(0.35 + i * 0.15).toFixed(2)}" d="${d.join('')}"/>` : ''))
-    .join('')
 }
 
 // --- the month's constellation -------------------------------------------------
@@ -242,6 +111,6 @@ export function buildScene(month: number): string {
 <g class="night"><rect width="1600" height="900" fill="url(#night)"/><g class="stars">${stars()}</g>${constellation(month)}</g>
 <g class="day"><rect width="1600" height="900" fill="url(#dawn)"/><circle cx="1250" cy="330" r="330" fill="url(#sun)"/>${temple()}</g>
 ${meander()}
-<g class="bust"><svg x="990" y="40" width="540" height="700" viewBox="50 80 550 720">${dottedBust()}</svg></g>
+<g class="bust"><svg x="1040" y="70" width="460" height="730" viewBox="0 0 ${BUST_WIDTH} ${BUST_HEIGHT}"><g class="night">${BUST_DOTS_NIGHT}</g><g class="day">${BUST_DOTS_DAY}</g></svg></g>
 </svg>`
 }

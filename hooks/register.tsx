@@ -20,7 +20,8 @@ export const register: Register = on => {
       $.ui.toast(unpainted)
     }
 
-    const base: ThemeSetArgs = { colors, backdrop: { scene: SCENE_ID, glass: false } }
+    const base: ThemeSetArgs = { colors, backdrop: { scene: SCENE_ID, glass: { blur: 0, opacity: 0.15 } } }
+    // Glass with no blur: the panels let the sky show through without the GPU cost of frosting.
     // Older builds refuse `style` or `sound`: step down until one is taken.
     for (const look of [{ ...base, style, sound }, { ...base, style }, base]) {
       try {
@@ -52,7 +53,7 @@ export const register: Register = on => {
     }
     const { Svg } = $.ui.resolve(e)
 
-    return <Svg source={scene} alt="Bust of Athena in dots under a night sky" />
+    return <Svg source={scene} alt="Head of Hermes in dots under a night sky" />
   })
 
   // The date as a Greek inscription above the prompt; it turns into English

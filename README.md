@@ -2,14 +2,14 @@
 
 A Greek theme for the Claude Code desktop app.
 
-- **Dotted bust of Athena**: a halftone bust with a crested helmet, made of thousands of dots, beside the conversation.
+- **Hermes in dots**: a marble head of Hermes, redrawn as thousands of halftone dots beside the conversation. Light dots by night, ink dots by day.
 - **Night and dawn**: in dark mode a starry sky with the month's constellation, named in Greek. In light mode a marble and Aegean-blue dawn with a distant temple.
 - **Greek date** above the message box (for example ΚΔʹ ΝΟΕΜΒΡΙΟΥ · ΤΡΙΤΗ · MMXXVI). When the pointer moves over it, it turns into English letter by letter.
 - **Marble and papyrus**: your messages are marble tablets with a Greek key in each corner. Claude's replies are papyrus scrolls between gilded rods. Tool calls are set in gold serif type.
 - **Lyre sounds**: a quiet night drone and plucked lyre cues when you send a message and when Claude finishes. Press the speaker in the session's title bar to hear them.
 - **`/oraculo [pregunta]`**: a saying from the Greek philosophers.
 
-The backdrop is a still picture, built once and painted once, so it costs almost nothing while you work. Only the date moves, and only while the pointer is over it. The terminal and editor integrations do not draw themes.
+The panels let the sky show through with no blur, and the backdrop is a still picture, built once and painted once, so it costs almost nothing while you work. Only the date moves, and only while the pointer is over it. The terminal and editor integrations do not draw themes.
 
 ## Install
 
@@ -38,3 +38,7 @@ claude plugin marketplace update olympus-night
 ```bash
 claude plugin update olympus-night@olympus-night
 ```
+
+## Credits
+
+The head of Hermes is redrawn from a photograph of the *Marble head from a herm* (Roman, 1st–2nd century CE), The Metropolitan Museum of Art, object 248804, released into the public domain (CC0) through the Met's Open Access program: https://www.metmuseum.org/art/collection/search/248804
