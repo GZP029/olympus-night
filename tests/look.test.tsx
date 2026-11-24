@@ -40,11 +40,12 @@ test('/oraculo answers with a saying', async ($, on) => {
   expect(r.text).toContain('—')
 })
 
-test('the date band shows in the desktop app', async ($, on) => {
+test('the backdrop carries the Greek date', async ($, on) => {
   stubs(on, [], [])
   await $.session.start({ source: 'startup', cwd: '/tmp' } as never)
-  const ui = await $.ui.mount({ plugin: 'olympus-night', surface: 'desktop', component: 'AbovePrompt', props: {} } as never)
+  const ui = await $.ui.mount({ plugin: 'olympus-night', surface: 'desktop', component: 'Backdrop', props: { scene: 'olympus-night' } } as never)
+  const svg: any = await ui.find({ type: 'Svg' })
 
-  expect(await ui.find({ type: 'Svg' })).toBeDefined()
+  expect(JSON.stringify(svg)).toContain('ΝΟΕΜΒΡΙΟΥ')
   await ui.unmount()
 })

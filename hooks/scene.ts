@@ -1,3 +1,4 @@
+import type { DateLines } from './date'
 import { BUST_DOTS_DAY, BUST_DOTS_NIGHT, BUST_HEIGHT, BUST_WIDTH } from './hermes-dots'
 
 // The backdrop: a night sky with a dotted head of Hermes and the month's
@@ -84,7 +85,12 @@ function temple(): string {
     `<path d="M140 748h160v-6H140zM146 742h148v-4H146z${cols}M144 688h152v-10H144zM150 678L220 652L290 678z"/></g>`
 }
 
-export function buildScene(month: number): string {
+// The date, cut into the sky above the head, as in an inscription.
+function dateMark(l: DateLines): string {
+  return `<g class="date"><text class="d1" x="1500" y="86">${l.greek}</text><text class="d2" x="1500" y="110">${l.greekSub}</text></g>`
+}
+
+export function buildScene(month: number, date: DateLines): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
 <style>
 .night{display:inline}.day{display:none}
@@ -94,14 +100,16 @@ export function buildScene(month: number): string {
 .const circle{fill:#f0d98f}
 .const text{fill:#d9b45a;fill-opacity:.55;font:14px serif;letter-spacing:6px}
 .key{fill:none;stroke:#d9b45a;stroke-opacity:.3;stroke-width:2}
+.date text{font-family:serif;text-anchor:end;fill:#ece8dc}.d1{font-size:24px;letter-spacing:3px}.d2{font-size:11px;letter-spacing:5px;fill:#9d9fba}
 .temple path{fill:#2f4a9a;fill-opacity:.12}.temple .hill{fill:#2f4a9a;fill-opacity:.07}
 @media (prefers-color-scheme: light){
 .night{display:none}.day{display:inline}
 .dot{stroke:#2f4a9a}
 .key{stroke:#2f4a9a;stroke-opacity:.18}
+.date text{fill:#1b1f3d}.date .d2{fill:#5d607c}
 }
-@media (max-aspect-ratio: 3/2){.bust{transform:translate(120px,40px) scale(.85)}}
-@media (max-aspect-ratio: 1/1){.bust{transform:translate(260px,240px) scale(.6)}}
+@media (max-aspect-ratio: 3/2){.bust{transform:translate(120px,40px) scale(.85)}.date{transform:translateX(-60px)}}
+@media (max-aspect-ratio: 1/1){.bust{transform:translate(260px,240px) scale(.6)}.date{transform:translateX(-270px)}}
 </style>
 <defs>
 <radialGradient id="night" cx="70%" cy="10%" r="95%"><stop offset="0" stop-color="#1c2352"/><stop offset=".55" stop-color="#0e1230"/><stop offset="1" stop-color="#0a0d1f"/></radialGradient>
@@ -111,6 +119,7 @@ export function buildScene(month: number): string {
 <g class="night"><rect width="1600" height="900" fill="url(#night)"/><g class="stars">${stars()}</g>${constellation(month)}</g>
 <g class="day"><rect width="1600" height="900" fill="url(#dawn)"/><circle cx="1250" cy="330" r="330" fill="url(#sun)"/>${temple()}</g>
 ${meander()}
+${dateMark(date)}
 <g class="bust"><svg x="1040" y="70" width="460" height="730" viewBox="0 0 ${BUST_WIDTH} ${BUST_HEIGHT}"><g class="night">${BUST_DOTS_NIGHT}</g><g class="day">${BUST_DOTS_DAY}</g></svg></g>
 </svg>`
 }

@@ -1,4 +1,4 @@
-// The date as a Greek inscription, which turns into English under the pointer.
+// The date as a Greek inscription: Greek numerals for the day, Roman for the year.
 
 const UNITS = ['', 'Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ϛ', 'Ζ', 'Η', 'Θ']
 const TENS = ['', 'Ι', 'Κ', 'Λ']
@@ -32,47 +32,4 @@ export function dateLines(d: Date): DateLines {
     english: `${d.getDate()} ${MONTHS_EN[d.getMonth()]}`,
     englishSub: `${DAYS_EN[d.getDay()]} · ${d.getFullYear()}`,
   }
-}
-
-// Each letter of the inscription lifts away in turn while the English settles in.
-// Nothing moves until the pointer is over it.
-function letters(text: string, cls: string): string {
-  return [...text]
-    .map((ch, i) => `<tspan class="${cls}" style="transition-delay:${(i * 0.018).toFixed(3)}s">${ch === ' ' ? '&#160;' : ch}</tspan>`)
-    .join('')
-}
-
-export const BAND_WIDTH = 460
-export const BAND_HEIGHT = 46
-
-export function dateBand(l: DateLines): string {
-  const mid = BAND_WIDTH / 2
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${BAND_WIDTH} ${BAND_HEIGHT}" width="${BAND_WIDTH}" height="${BAND_HEIGHT}">
-<style>
-svg{cursor:default}
-text{font-family:serif;text-anchor:middle;fill:#ece8dc}
-.sub{font-size:9px;letter-spacing:4px;fill:#9d9fba}
-.main{font-size:17px;letter-spacing:3px}
-.g,.e{transition:opacity .4s ease}
-.e{opacity:0}
-svg:hover .g{opacity:0}
-svg:hover .e{opacity:1}
-.gt,.et{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
-.et{transform:translateY(7px)}
-svg:hover .gt{transform:translateY(-7px)}
-svg:hover .et{transform:none}
-.line{stroke:#d9b45a;stroke-width:1;stroke-dasharray:${BAND_WIDTH};stroke-dashoffset:${BAND_WIDTH};transition:stroke-dashoffset .8s ease}
-svg:hover .line{stroke-dashoffset:0}
-.key{fill:none;stroke:#d9b45a;stroke-opacity:.7;stroke-width:1.2}
-@media (prefers-color-scheme: light){
-text{fill:#1b1f3d}.sub{fill:#5d607c}
-.line,.key{stroke:#2f4a9a}
-}
-@media (prefers-reduced-motion: reduce){.g,.e,.line{transition:none}}
-</style>
-<path class="key" d="M18 30V18H30V26H22V22H26M${BAND_WIDTH - 18} 30V18H${BAND_WIDTH - 30}V26H${BAND_WIDTH - 22}V22H${BAND_WIDTH - 26}"/>
-<g class="gt"><text class="main" x="${mid}" y="22">${letters(l.greek, 'g')}</text><text class="sub" x="${mid}" y="38">${letters(l.greekSub, 'g')}</text></g>
-<g class="et"><text class="main" x="${mid}" y="22">${letters(l.english, 'e')}</text><text class="sub" x="${mid}" y="38">${letters(l.englishSub, 'e')}</text></g>
-<path class="line" d="M40 43H${BAND_WIDTH - 40}"/>
-</svg>`
 }

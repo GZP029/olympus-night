@@ -4,12 +4,12 @@ A Greek theme for the Claude Code desktop app.
 
 - **Hermes in dots**: a marble head of Hermes, redrawn as thousands of halftone dots beside the conversation. Light dots by night, ink dots by day.
 - **Night and dawn**: in dark mode a starry sky with the month's constellation, named in Greek. In light mode a marble and Aegean-blue dawn with a distant temple.
-- **Greek date** above the message box (for example ΚΔʹ ΝΟΕΜΒΡΙΟΥ · ΤΡΙΤΗ · MMXXVI). When the pointer moves over it, it turns into English letter by letter.
+- **Greek date** in the sky, top right (for example ΚΔʹ ΝΟΕΜΒΡΙΟΥ · ΤΡΙΤΗ · MMXXVI), with Greek numerals for the day and Roman for the year.
 - **Marble and papyrus**: your messages are marble tablets with a Greek key in each corner. Claude's replies are papyrus scrolls between gilded rods. Tool calls are set in gold serif type.
 - **Lyre sounds**: a quiet night drone and plucked lyre cues when you send a message and when Claude finishes. Press the speaker in the session's title bar to hear them.
 - **`/oraculo [pregunta]`**: a saying from the Greek philosophers.
 
-The panels let the sky show through with no blur, and the backdrop is a still picture, built once and painted once, so it costs almost nothing while you work. Only the date moves, and only while the pointer is over it. The terminal and editor integrations do not draw themes.
+The panels let the sky show through with no blur, and the backdrop is a still picture, built once and painted once, so it costs almost nothing while you work. The terminal and editor integrations do not draw themes.
 
 ## Install
 
